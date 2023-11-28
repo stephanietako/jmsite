@@ -1,0 +1,23 @@
+import React from "react";
+// Styles
+import styles from "./styles.module.scss";
+import background from "../../assets/images/mutation_wolf.png";
+const HeroSection = () => {
+  return (
+    <div className={styles.hero_section}>
+      <div className={styles.__container}>
+        <div className={styles.__hero_text}>
+          <h1>I am John Doe</h1>
+          <p>And I'm an digital artist</p>
+          <button>Hire me</button>
+        </div>
+        <div
+          className={styles.__hero_image}
+          style={{ backgroundImage: `url(${background})` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+export default HeroSection;

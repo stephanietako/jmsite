@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-family: "Darker Grotesque", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Likely future */
+  scroll-padding-top: var(--scroll-padding, 216px);
+}
