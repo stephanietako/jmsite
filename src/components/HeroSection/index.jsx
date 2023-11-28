@@ -1,7 +1,7 @@
 import React from "react";
 // Styles
 import styles from "./styles.module.scss";
-import background from "../../assets/images/mutation_wolf.png";
+import background from "../../assets/images/wolf_transp.png";
 const HeroSection = () => {
   return (
     <div className={styles.hero_section}>
