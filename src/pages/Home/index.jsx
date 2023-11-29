@@ -1,5 +1,3 @@
-import React from "react";
-
 // Styles
 import styles from "./styles.module.scss";
 import HeroSection from "../../components/HeroSection";

@@ -1,0 +1,30 @@
+.__container_anime {
+  position: fixed;
+  z-index: -1;
+  background-color: transparent;
+  width: 100%;
+  height: auto;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  background-size: cover;
+  display: flex;
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out 1s forwards;
+  border: 3px solid blueviolet;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    display: none !important;
+  }
+}
