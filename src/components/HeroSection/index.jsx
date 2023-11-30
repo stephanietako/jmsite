@@ -1,8 +1,8 @@
-import Scene from "../Scene";
+// import Scene from "../Scene";
 import Taurus from "../Taurus";
 // Styles
 import styles from "./styles.module.scss";
-import background from "../../assets/images/wolf_transp.png";
+// import background from "../../assets/images/wolf_transp.png";
 const HeroSection = () => {
   return (
     <div className={styles.hero_section}>
@@ -14,7 +14,7 @@ const HeroSection = () => {
         </div>
         <div
           className={styles.__hero_image}
-          style={{ backgroundImage: `url(${background})` }}
+          // style={{ backgroundImage: `url(${background})` }}
         >
           <div className={styles.__hero_anime}>
             {/* <Scene /> */}

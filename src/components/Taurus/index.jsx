@@ -5,36 +5,43 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 // Styles
 import styles from "./styles.module.scss";
+// Assets
 import wolf from "../../assets/images/wolf_transp.png";
 import cosmos from "../../assets/images/cosmos.jpg";
 
 const Scene = () => {
-  const myMesh = useRef();
-  const [colorMap, normalMap] = useLoader(TextureLoader, [cosmos, wolf]);
+  const cosmosMesh = useRef();
+  const wolfMesh = useRef();
+  const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   return (
     <>
       {/* <directionalLight /> */}
-      <ambientLight intensity={0.9} />
-      <spotLight position={[20, 20, 20]} angle={0.5} />
-      <mesh ref={myMesh} position={[0, 0, 0.3]}>
+      <ambientLight intensity={1} />
+      {/* <spotLight position={[20, 20, 20]} angle={0.5} /> */}
+      <mesh ref={cosmosMesh} position={[0, 0, 0.3]}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshPhongMaterial normalMap={normalMap} />
+        {/* <meshPhongMaterial map={colorMap} opacity={0.4} /> */}
         <meshStandardMaterial
-          map={colorMap}
+          map={cosmosMap}
           opacity={0.4}
           depthWrite={true}
           transparent={true}
           side={THREE.DoubleSide}
         />
-
-        <OrbitControls
-          enablePan={true}
-          enableRotate={true}
-          zoomSpeed={0.6}
-          panSpeed={0.5}
-          rotateSpeed={0.4}
-        />
       </mesh>
+
+      <mesh ref={wolfMesh} position={[0, 0, 0.3]}>
+        <sphereGeometry args={[1.005, 32, 32]} />
+        <meshStandardMaterial map={wolfMap} opacity={0.4} transparent={true} />
+      </mesh>
+
+      <OrbitControls
+        enablePan={true}
+        enableRotate={true}
+        zoomSpeed={0.6}
+        panSpeed={0.5}
+        rotateSpeed={0.4}
+      />
     </>
   );
 };
