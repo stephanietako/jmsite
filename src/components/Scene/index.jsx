@@ -26,8 +26,8 @@ const Scene = () => {
       cancelAnimationFrame(animationFrameId);
 
       setImagePositionWithDelay({
-        x: e.clientX - window.innerWidth * 2 + 1,
-        y: e.clientY - window.innerHeight * 2 + 1,
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: (e.clientY / window.innerHeight) * 2 + 1,
       });
     };
 
@@ -55,6 +55,18 @@ const Scene = () => {
         <Sphere args={[1, 100, 200]} scale={[0.5, 1, 0.5]}>
           <meshStandardMaterial map={texture} />
         </Sphere>
+        <mesh ref={animRef} style={animStyles}>
+          {/* <sphereBufferGeometry args={[1, 30, 30]} />
+          <meshStandardMaterial color={"green"} /> */}
+          {/* function Torus() {
+      return (
+        <mesh>
+          <torusBufferGeometry args={[1, 0.4, 16, 100]} />
+          <meshStandardMaterial color={'blue'} />
+        </mesh>
+      );
+    }*/}
+        </mesh>
       </mesh>
     );
   };
@@ -77,11 +89,7 @@ const Scene = () => {
 
   return (
     <div className={styles.animation}>
-      <div
-        className={styles.__container_anime}
-        ref={animRef}
-        style={animStyles}
-      >
+      <div className={styles.__container_anime}>
         <Canvas camera={{ fov: 19, position: [7, 7, 7] }}>
           <ThreeContent />
         </Canvas>
