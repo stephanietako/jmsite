@@ -15,9 +15,9 @@ const HeroSection = () => {
           className={styles.__hero_image}
           style={{ backgroundImage: `url(${background})` }}
         >
-          <div className={styles.__hero_anime}>
+          {/* <div className={styles.__hero_anime}>
             <Scene />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

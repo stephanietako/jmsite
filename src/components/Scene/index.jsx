@@ -26,8 +26,8 @@ const Scene = () => {
       cancelAnimationFrame(animationFrameId);
 
       setImagePositionWithDelay({
-        x: (e.clientX - window.innerWidth / 2) / 1.5,
-        y: (e.clientY - window.innerHeight / 2) / 1.5,
+        x: e.clientX - window.innerWidth * 2 + 1,
+        y: e.clientY - window.innerHeight * 2 + 1,
       });
     };
 
@@ -62,7 +62,7 @@ const Scene = () => {
   const ThreeContent = () => {
     // eslint-disable-next-line no-self-compare
     const lightRef = (useRef < PointLight) | (null > null);
-    useHelper(lightRef, PointLightHelper, 1, "red");
+    useHelper(lightRef, PointLightHelper, 1);
 
     return (
       <>
