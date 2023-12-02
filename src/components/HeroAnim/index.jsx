@@ -1,7 +1,7 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 // Styles
 import styles from "./styles.module.scss";
@@ -15,10 +15,25 @@ const Scene = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   return (
     <>
-      {/* <directionalLight /> */}
+      <Stars
+        radius={300}
+        depth={60}
+        count={20000}
+        factor={7}
+        saturation={0}
+        fade={true}
+      />
+      <directionalLight intensity={0.5} position={[0, 2, 1]} />
       <ambientLight intensity={1} />
-      {/* <spotLight position={[20, 20, 20]} angle={0.5} /> */}
-      <mesh ref={cosmosMesh} position={[0, 0, 0.3]}>
+      <spotLight />
+      <mesh
+        ref={cosmosMesh}
+        position={[0, 0, 0.3]}
+        scale={[4, 4, 4]}
+        // tableau [x, y, z]  représente les angles de rotation autour des axes x, y et z respectivement.
+        // Chaque angle est spécifié en radians
+        // rotation={[0, Math.PI / 4, 0]}
+      >
         <sphereGeometry args={[1, 32, 32]} />
         {/* <meshPhongMaterial map={colorMap} opacity={0.4} /> */}
         <meshStandardMaterial
@@ -30,9 +45,18 @@ const Scene = () => {
         />
       </mesh>
 
-      <mesh ref={wolfMesh} position={[0, 0, 0.3]}>
-        <sphereGeometry args={[1.005, 32, 32]} />
-        <meshStandardMaterial map={wolfMap} opacity={0.4} transparent={true} />
+      <mesh ref={wolfMesh}>
+        <group position={[0, 0, 0.3]} scale={[4, 4, 4]}>
+          <mesh ref={wolfMesh}>
+            <ambientLight intensity={5} />
+            <sphereGeometry args={[1.005, 32, 32]} />
+            <meshStandardMaterial
+              map={wolfMap}
+              opacity={0.7}
+              transparent={true}
+            />
+          </mesh>
+        </group>
       </mesh>
 
       <OrbitControls
@@ -49,7 +73,10 @@ const Scene = () => {
 const App = () => {
   return (
     <div className={styles.wrapper}>
-      <Canvas className={styles.canvas}>
+      <Canvas
+        className={styles.canvas}
+        camera={{ position: [8, 0.5, 7], fov: 56 }}
+      >
         <Suspense fallback={null}>
           <Scene />
         </Suspense>

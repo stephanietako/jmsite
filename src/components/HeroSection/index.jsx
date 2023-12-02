@@ -1,5 +1,5 @@
 // import Scene from "../Scene";
-import Taurus from "../Taurus";
+import HeroAnim from "../HeroAnim";
 // Styles
 import styles from "./styles.module.scss";
 // import background from "../../assets/images/wolf_transp.png";
@@ -18,7 +18,7 @@ const HeroSection = () => {
         >
           <div className={styles.__hero_anime}>
             {/* <Scene /> */}
-            <Taurus />
+            <HeroAnim />
           </div>
         </div>
       </div>
