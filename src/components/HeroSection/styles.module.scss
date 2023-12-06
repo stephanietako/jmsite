@@ -2,65 +2,59 @@
   display: flex;
   width: 100%;
   height: auto;
-  border: 5px solid red;
   flex-direction: column;
   position: relative;
   flex-wrap: wrap;
 
   .__container {
     display: flex;
-
     width: auto;
     height: auto;
     justify-content: space-between;
 
     .__hero_text {
-      text-align: center;
-
-      width: auto;
-      height: auto;
-      position: relative;
-      padding: 2rem;
-      background-color: aqua;
+      display: flex;
+      flex-direction: column;
+      width: 33%;
+      height: 100%;
+      z-index: 2;
+      position: absolute;
+      background: transparent;
+      padding: 3rem;
+      margin-top: 5rem;
       h1 {
-        color: red;
+        color: #fff;
         font-size: 5rem;
       }
-    }
-    .__hero_image {
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      position: relative;
-      height: 42rem;
-      border: 4px solid #000;
-      width: 100%;
+      p {
+        color: #fff;
+        font-size: 3rem;
+      }
 
-      .__hero_anime {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        overflow: hidden;
+      #__btn_hero {
+        outline: 0;
+        display: inline-block;
+        background-color: transparent;
+        top: 50%;
+        left: 50%;
+        border: 1px solid #fff;
+        cursor: pointer;
+        width: 50%;
+        margin: 6rem;
+        p {
+          font-size: 3rem;
+          color: #fff;
+          padding: 0 1rem 1rem;
+        }
       }
     }
-  }
-  button {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 10px 25px;
-    color: black;
-    background-color: #ddd;
-    text-align: center;
-    cursor: pointer;
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    &:hover {
-      background-color: #555;
-      color: violet;
+
+    .__hero_anime {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      cursor: pointer;
     }
   }
 }

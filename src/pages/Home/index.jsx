@@ -2,6 +2,7 @@
 import styles from "./styles.module.scss";
 import HeroSection from "../../components/HeroSection";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const Home = () => {
   return (
@@ -9,9 +10,8 @@ const Home = () => {
       <Navbar />
       <div className={styles.home}>
         <HeroSection />
-        <div className={styles.__container}>
-          <p>HOME</p>
-        </div>
+
+        <Footer />
       </div>
     </>
   );

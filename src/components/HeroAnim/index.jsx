@@ -13,28 +13,27 @@ import cosmos from "../../assets/images/moon.webp";
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   return (
-    <group position={[0, 0, 0.9]} scale={[2, 2, 2]}>
+    <group position={[4, 0, 0.8]} scale={[2, 2, 2]}>
       <mesh>
         <Decal
           scale={[2, 2, 2]}
-          position={[0, 0, 0.9]}
+          position={[0, 0, 0.8]}
           map={wolfMap}
           polygonOffset
-          polygonOffsetFactor={-10}
-          rotation={0}
+          rotation={[0, 0, 0]}
           depthWrite={false}
+          side={THREE.DoubleSide}
         ></Decal>
         <meshStandardMaterial
           opacity={0}
           depthWrite={false}
           transparent={true}
           side={THREE.DoubleSide}
-          color="blue"
         />
         <sphereGeometry args={[2, 2]} />
       </mesh>
 
-      <mesh scale={[1, 1, 1]}>
+      <mesh scale={[1.8, 1.8, 1.8]}>
         <meshStandardMaterial
           map={cosmosMap}
           opacity={0.3}

@@ -1,0 +1,70 @@
+.footer {
+  display: flex;
+  bottom: 0;
+  width: 100%;
+  width: 100%;
+  height: 100%;
+  background: #000;
+
+  .__container {
+    display: flex;
+    align-items: center;
+    bottom: 0;
+    width: auto;
+    color: #fff;
+    height: auto;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem;
+
+    .__logo {
+      width: auto;
+      max-height: 15rem;
+      object-fit: cover;
+    }
+
+    .__copyright {
+      display: flex;
+      flex-wrap: wrap;
+      color: #fff;
+      font-size: 24px;
+      width: 100%;
+    }
+
+    ul {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      list-style-type: none;
+      height: auto;
+      width: auto;
+
+      li {
+        padding: 8px;
+        font-size: small;
+
+        a {
+          color: #fff;
+          font-size: 22px;
+          &:hover {
+            color: silver;
+          }
+        }
+      }
+    }
+  }
+}
+//////////////////////// RESPONSIVE ///////////////////////////////
+@media only screen and (max-width: 768px) {
+  .footer {
+    .__container {
+      width: 100%;
+      justify-content: start;
+    }
+    span {
+      width: 100%;
+      padding: 0.5rem;
+    }
+  }
+}

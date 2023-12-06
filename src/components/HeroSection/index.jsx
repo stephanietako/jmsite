@@ -2,24 +2,19 @@
 import HeroAnim from "../HeroAnim";
 // Styles
 import styles from "./styles.module.scss";
-// import background from "../../assets/images/wolf_transp.png";
 const HeroSection = () => {
   return (
     <div className={styles.hero_section}>
       <div className={styles.__container}>
         <div className={styles.__hero_text}>
-          <h1>I am John Doe</h1>
-          <p>And I'm an digital artist</p>
-          <button>Hire me</button>
+          <h1>jean-marc eliette</h1>
+          <p>directeur artistique + motion design / corporate / digital</p>
+          <button id={styles.__btn_hero}>
+            <p>entrer</p>
+          </button>
         </div>
-        <div
-          className={styles.__hero_image}
-          // style={{ backgroundImage: `url(${background})` }}
-        >
-          <div className={styles.__hero_anime}>
-            {/* <Scene /> */}
-            <HeroAnim />
-          </div>
+        <div className={styles.__hero_anime}>
+          <HeroAnim />
         </div>
       </div>
     </div>
