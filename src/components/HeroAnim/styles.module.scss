@@ -8,3 +8,13 @@
     background-color: black;
   }
 }
+// Utilisez Decal pour ajouter le sticker du loup
+// <Decal
+//     material={new THREE.MeshStandardMaterial({ map: wolfMap })}
+//     position={[0, 0, 0.3]} // Ajustez la position du sticker sur la sphère
+//     rotation={[0, 0, 0]} // Ajustez la rotation du sticker sur la sphère
+//     scale={[3, 3, 3]} // Ajustez l'échelle du sticker sur la sphère
+//     opacity={0.9}
+//     transparent={true}
+//   />
+//  <meshStandardMaterial color="red" opacity={0.2} transparent={true} />

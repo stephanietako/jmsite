@@ -1,7 +1,7 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls, Stars, Decal } from "@react-three/drei";
 import * as THREE from "three";
 // Styles
 import styles from "./styles.module.scss";
@@ -9,46 +9,43 @@ import styles from "./styles.module.scss";
 import wolf from "../../assets/images/mutation_Wolf.png";
 import cosmos from "../../assets/images/essai.jpeg";
 
-const StarsBackground = () => {
-  return (
-    <Stars
-      radius={300}
-      depth={60}
-      count={20000}
-      factor={7}
-      saturation={0}
-      fade={true}
-    />
-  );
-};
-
-const CosmosObject = ({ cosmosMap }) => {
+//MOON SPHERE
+const MoonObject = () => {
+  const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   const cosmosMesh = useRef();
-
   return (
-    <mesh ref={cosmosMesh} position={[0, 0, 0.3]} scale={[3, 3, 3]}>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshStandardMaterial
-        map={cosmosMap}
-        metalness={0.4}
-        roughness={0.7}
-        opacity={0.4}
-        depthWrite={true}
-        transparent={true}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
-  );
-};
+    <group position={[0, 0, 0.9]} scale={[2, 2, 2]}>
+      <mesh ref={cosmosMesh}>
+        <directionalLight />
+        <Decal
+          scale={[2, 2, 2]}
+          position={[0, 0, 0.9]}
+          map={wolfMap}
+          polygonOffset
+          polygonOffsetFactor={-10}
+          rotation={0}
+          depthWrite={false}
+        ></Decal>
+        <meshStandardMaterial
+          opacity={0}
+          depthWrite={true}
+          transparent={true}
+          side={THREE.DoubleSide}
+        />
+        <sphereGeometry args={[2, 2]} />
+      </mesh>
 
-const WolfObject = ({ wolfMap }) => {
-  const wolfMesh = useRef();
-
-  return (
-    <group position={[0, 0, 0.3]} scale={[3, 3, 3]}>
-      <mesh ref={wolfMesh}>
-        <sphereGeometry args={[1.005, 32, 32]} />
-        <meshStandardMaterial map={wolfMap} opacity={0.7} transparent={true} />
+      <mesh scale={[1, 1, 1]}>
+        <meshStandardMaterial
+          map={cosmosMap}
+          opacity={0.2}
+          metalness={0.4}
+          roughness={0.7}
+          depthWrite={false}
+          transparent={true}
+          side={THREE.DoubleSide}
+        />
+        <sphereGeometry args={[1, 32, 32]} />
       </mesh>
     </group>
   );
@@ -66,39 +63,35 @@ const Controls = () => {
   );
 };
 
-const Scene = () => {
-  const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
-
+const StarsBackground = () => {
   return (
-    <>
-      <ambientLight intensity={9} />
-      <StarsBackground />
-      {/* Lights */}
-      <ambientLight intensity={4} />
-      <directionalLight intensity={0.5} position={[0, 2, 1]} />
-      {/* Objects */}
-      <CosmosObject cosmosMap={cosmosMap} />
-      <WolfObject wolfMap={wolfMap} scale={[1, 1, 1]} />
-
-      {/* Controls */}
-      <Controls />
-    </>
+    <Stars
+      radius={300}
+      depth={60}
+      count={20000}
+      factor={7}
+      saturation={0}
+      fade={true}
+    />
   );
 };
-
-const App = () => {
+const HeroAnim = () => {
   return (
     <div className={styles.wrapper}>
       <Canvas
         className={styles.canvas}
-        camera={{ position: [8, 0.5, 7], fov: 56 }}
+        camera={{ position: [1, 1, 10], fov: 56 }}
       >
+        <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
+        <ambientLight intensity={7} />
+        <Controls />
+        <StarsBackground />
         <Suspense fallback={null}>
-          <Scene />
+          <MoonObject />
         </Suspense>
       </Canvas>
     </div>
   );
 };
 
-export default App;
+export default HeroAnim;
