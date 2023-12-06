@@ -1,4 +1,4 @@
-import { Suspense, useRef } from "react";
+import { Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { OrbitControls, Stars, Decal } from "@react-three/drei";
@@ -7,16 +7,14 @@ import * as THREE from "three";
 import styles from "./styles.module.scss";
 // Assets
 import wolf from "../../assets/images/mutation_Wolf.png";
-import cosmos from "../../assets/images/essai.jpeg";
+import cosmos from "../../assets/images/moon.webp";
 
 //MOON SPHERE
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
-  const cosmosMesh = useRef();
   return (
     <group position={[0, 0, 0.9]} scale={[2, 2, 2]}>
-      <mesh ref={cosmosMesh}>
-        <directionalLight />
+      <mesh>
         <Decal
           scale={[2, 2, 2]}
           position={[0, 0, 0.9]}
@@ -28,9 +26,10 @@ const MoonObject = () => {
         ></Decal>
         <meshStandardMaterial
           opacity={0}
-          depthWrite={true}
+          depthWrite={false}
           transparent={true}
           side={THREE.DoubleSide}
+          color="blue"
         />
         <sphereGeometry args={[2, 2]} />
       </mesh>
@@ -38,12 +37,13 @@ const MoonObject = () => {
       <mesh scale={[1, 1, 1]}>
         <meshStandardMaterial
           map={cosmosMap}
-          opacity={0.2}
+          opacity={0.3}
           metalness={0.4}
           roughness={0.7}
           depthWrite={false}
           transparent={true}
           side={THREE.DoubleSide}
+          color="yellow"
         />
         <sphereGeometry args={[1, 32, 32]} />
       </mesh>
@@ -82,6 +82,7 @@ const HeroAnim = () => {
         className={styles.canvas}
         camera={{ position: [1, 1, 10], fov: 56 }}
       >
+        <directionalLight intensity={0.5} position={[0, 2, 1]} />
         <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
         <ambientLight intensity={7} />
         <Controls />
