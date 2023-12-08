@@ -24,7 +24,7 @@ const Navbar = () => {
     };
   }, []);
 
-  // Tableau d'objets représentant chaque élément du menu
+  // Menu
   const menuItems = [
     { id: 1, icon: linkedin, link: linkedinURL, alt: "linkedin icon" },
     { id: 2, icon: email, link: `mailto:${emailAdress}`, alt: "email icon" },

@@ -12,8 +12,13 @@ import cosmos from "../../assets/images/moon.webp";
 //MOON SPHERE
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
+
+  const isMobile = window.innerWidth <= 768;
+  const groupScale = isMobile ? [0.8, 0.8, 0.8] : [1.7, 1.7, 1.7];
+  const groupPosition = isMobile ? [0, 1.2, 0] : [2, 0, 0.8];
+
   return (
-    <group position={[4, 0, 0.8]} scale={[1.7, 1.7, 1.7]}>
+    <group position={groupPosition} scale={groupScale}>
       <directionalLight intensity={0.3} position={[0, 2, 1]} />
       <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
       <ambientLight intensity={9} />

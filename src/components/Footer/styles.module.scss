@@ -1,9 +1,12 @@
 .footer {
-  display: flex;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: transparent;
+  position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   height: auto;
-  background: #000;
 
   .__container {
     display: flex;
@@ -59,10 +62,12 @@
     .__container {
       width: 100%;
       justify-content: start;
-    }
-    span {
-      width: 100%;
-      padding: 0.5rem;
+      .__logo {
+        max-height: 4rem;
+      }
+      .__copyright {
+        font-size: 22px;
+      }
     }
   }
 }
