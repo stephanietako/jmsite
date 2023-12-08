@@ -1,0 +1,36 @@
+.toTopBtn {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  justify-content: flex-end;
+  z-index: 999;
+
+  .__icon_position {
+    background: transparent;
+    right: 10px;
+    display: flex;
+    width: auto;
+    height: 50%;
+    position: fixed;
+    border: none;
+    img {
+      object-fit: cover;
+      width: 2rem;
+      height: auto;
+      cursor: pointer;
+      z-index: 999;
+      align-self: center;
+      position: relative;
+    }
+  }
+}
+
+///////////////////////// RESPONSIVE //////////////////////
+@media only screen and (max-width: 768px) {
+  .__icon_position {
+    img {
+      width: 1.5rem;
+    }
+  }
+}
