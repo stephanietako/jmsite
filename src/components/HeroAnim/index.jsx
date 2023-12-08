@@ -14,6 +14,9 @@ const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   return (
     <group position={[4, 0, 0.8]} scale={[1.7, 1.7, 1.7]}>
+      <directionalLight intensity={0.3} position={[0, 2, 1]} />
+      <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
+      <ambientLight intensity={9} />
       <mesh>
         <Decal
           scale={[2, 2, 2]}
@@ -42,7 +45,6 @@ const MoonObject = () => {
           depthWrite={false}
           transparent={true}
           side={THREE.DoubleSide}
-          color="yellow"
         />
         <sphereGeometry args={[1, 32, 32]} />
       </mesh>
@@ -81,9 +83,6 @@ const HeroAnim = () => {
         className={styles.canvas}
         camera={{ position: [1, 1, 10], fov: 56 }}
       >
-        <directionalLight intensity={0.5} position={[0, 2, 1]} />
-        <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
-        <ambientLight intensity={7} />
         <Controls />
         <StarsBackground />
         <Suspense fallback={null}>
