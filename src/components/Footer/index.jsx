@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 // Styles
 import styles from "./styles.module.scss";
 // Assets
@@ -13,16 +12,13 @@ const Footer = () => {
       <footer className={styles.__container}>
         <ul>
           <li>
-            <a href="#welcome">
+            <a href="/">
               <img
                 className={styles.__logo}
                 src={logo}
                 alt="Jean-Marc Eliette logo"
               />
             </a>
-          </li>
-          <li>
-            <Link to="terms">Mentions légales</Link>
           </li>
           <li>
             <div className={styles.__copyright}>

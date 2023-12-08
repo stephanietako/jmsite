@@ -13,7 +13,7 @@ import cosmos from "../../assets/images/moon.webp";
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
   return (
-    <group position={[4, 0, 0.8]} scale={[2, 2, 2]}>
+    <group position={[4, 0, 0.8]} scale={[1.7, 1.7, 1.7]}>
       <mesh>
         <Decal
           scale={[2, 2, 2]}

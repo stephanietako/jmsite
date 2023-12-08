@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Darker+Grotesque&display=swap");
+@import "./style/fonts.scss";
+
 * {
   margin: 0;
   padding: 0;
@@ -14,5 +15,4 @@ html {
   -moz-user-select: none; /* Firefox all */
   -ms-user-select: none; /* IE 10+ */
   user-select: none; /* Likely future */
-  scroll-padding-top: var(--scroll-padding, 67px);
 }

@@ -1,54 +1,83 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-//Styles
+import { useState, useEffect } from "react";
 import styles from "./styles.module.scss";
+import logo from "../../assets/logo/jmlogo.jpg";
+import menu from "../../assets/icon/menu-clear.png";
+import cross from "../../assets/icon/cross-clear.png";
+import linkedin from "../../assets/icon/linkedin-clear.png";
+import email from "../../assets/icon/at-clear.png";
 
 const Navbar = () => {
-  const navbarElement = useRef(null);
-  let navigationHeight = 0;
+  const [isOpen, setIsOpen] = useState(false);
+  const linkedinURL = process.env.REACT_APP_LINKEDIN_URL;
+  const emailAdress = process.env.REACT_APP_EMAIL_URL;
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 980);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   useEffect(() => {
-    // This effect will only run after the navbar element has been rendered
-    // eslint-disable-next-line
-    navigationHeight = navbarElement.current.offsetHeight;
-    console.info("Navbar height:", navbarElement.current.offsetHeight);
-    navbarElement.current.style.setProperty(
-      "--scroll-padding",
-      navigationHeight
-    );
-  }, [navbarElement]);
-  // navbar color state change managment
-  const [fix, setFix] = useState(false);
-  const setFixed = () => {
-    if (window.scrollY >= 142) {
-      setFix(true);
-    } else {
-      setFix(false);
-    }
-  };
-  window.addEventListener("scroll", setFixed);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 980);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // Tableau d'objets représentant chaque élément du menu
+  const menuItems = [
+    { id: 1, icon: linkedin, link: linkedinURL, alt: "linkedin icon" },
+    { id: 2, icon: email, link: `mailto:${emailAdress}`, alt: "email icon" },
+  ];
 
   return (
-    <nav
-      ref={navbarElement}
-      className={fix ? `${styles.navbar} ${styles.fixed}` : `${styles.navbar}`}
-    >
-      <div className={styles.__content}>
-        <div className={styles.__logo}>
-          <a href="/">LOGO</a>
-        </div>
-        <ul className={styles.__link}>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/">About</Link>
-          </li>
-          <li>
-            <Link to="/">Artwork</Link>
-          </li>
-        </ul>
-        <button>Contact</button>
+    <nav className={styles.navbar}>
+      <div className={styles.__logo}>
+        <a href="/">
+          <img className={styles.__logo} src={logo} alt="Tako dev logo" />
+        </a>
       </div>
+
+      {/* Desktop */}
+      {!isMobile && (
+        <ul className={styles.__nav_menu}>
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <a href={item.link} rel="noopener noreferrer">
+                <img
+                  className={styles.__icons_link}
+                  src={item.icon}
+                  alt={item.alt}
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Mobile */}
+      {isMobile && (
+        <div className={styles.__nav_burger_menu}>
+          <button className={styles.__burger_btn} onClick={toggleMenu}>
+            <img src={isOpen ? cross : menu} alt={isOpen ? "Menu" : "Cross"} />
+          </button>
+          {isOpen && (
+            <ul className={styles.__menu_mobile}>
+              {menuItems.map((item) => (
+                <li key={item.id}>
+                  <a href={item.link} rel="noopener noreferrer">
+                    <img
+                      className={styles.__icons_link}
+                      src={item.icon}
+                      alt={item.alt}
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

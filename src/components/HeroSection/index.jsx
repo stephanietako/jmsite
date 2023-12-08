@@ -8,7 +8,8 @@ const HeroSection = () => {
       <div className={styles.__container}>
         <div className={styles.__hero_text}>
           <h1>jean-marc eliette</h1>
-          <p>directeur artistique + motion design / corporate / digital</p>
+          <p>directeur artistique + motion design</p>
+          <p>corporate / digital</p>
           <button id={styles.__btn_hero}>
             <p>entrer</p>
           </button>

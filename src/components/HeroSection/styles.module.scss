@@ -15,13 +15,12 @@
     .__hero_text {
       display: flex;
       flex-direction: column;
-      width: 33%;
-      height: 100%;
       z-index: 2;
       position: absolute;
       background: transparent;
-      padding: 3rem;
-      margin-top: 5rem;
+      height: auto;
+      width: auto;
+      padding: 2rem;
       h1 {
         color: #fff;
         font-size: 5rem;
@@ -39,8 +38,9 @@
         left: 50%;
         border: 1px solid #fff;
         cursor: pointer;
-        width: 50%;
-        margin: 6rem;
+        width: 30%;
+        left: 50%;
+        margin: 2rem 3rem;
         p {
           font-size: 3rem;
           color: #fff;
