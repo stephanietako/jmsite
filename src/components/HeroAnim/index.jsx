@@ -13,12 +13,33 @@ import cosmos from "../../assets/images/moon.webp";
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
 
+  // const isMobile = window.innerWidth <= 768;
+  // const groupScale = isMobile ? [0.8, 0.8, 0.8] : [1.7, 1.7, 1.7];
+  // const groupPosition = isMobile ? [0, 1.2, 0] : [2, 0, 0.8];
   const isMobile = window.innerWidth <= 768;
-  const groupScale = isMobile ? [0.8, 0.8, 0.8] : [1.7, 1.7, 1.7];
-  const groupPosition = isMobile ? [0, 1.2, 0] : [2, 0, 0.8];
+  const isExtraSmall = window.innerWidth <= 600;
+  const isMedium = window.innerWidth <= 1024;
 
+  // Condition media queries scale and position animation
+  let groupScale, groupPosition;
+  // 500
+  if (isExtraSmall) {
+    groupScale = [0.9, 0.9, 0.9];
+    groupPosition = [0, 1.4, 0];
+    // 768
+  } else if (isMobile) {
+    groupScale = [1.4, 1.4, 1.4];
+    groupPosition = [0, 0, 0.8];
+  } else if (isMedium) {
+    groupScale = [1.7, 1.7, 1.7];
+    groupPosition = [0, -2, 0];
+  } else {
+    groupScale = [1.7, 1.7, 1.7];
+    groupPosition = [0, 0, 0];
+  }
   return (
     <group position={groupPosition} scale={groupScale}>
+      );
       <directionalLight intensity={0.3} position={[0, 2, 1]} />
       <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
       <ambientLight intensity={9} />
@@ -40,7 +61,6 @@ const MoonObject = () => {
         />
         <sphereGeometry args={[2, 2]} />
       </mesh>
-
       <mesh scale={[1.8, 1.8, 1.8]}>
         <meshStandardMaterial
           map={cosmosMap}

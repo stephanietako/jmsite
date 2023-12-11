@@ -61,10 +61,26 @@
       width: 100%;
       justify-content: start;
       .__logo {
-        max-height: 4rem;
+        height: 4rem;
       }
       .__copyright {
         font-size: 22px;
+        padding-bottom: 0.5rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .footer {
+    .__container {
+      width: 100%;
+      justify-content: start;
+      .__logo {
+        height: 3rem;
+      }
+      .__copyright {
+        font-size: 18px;
       }
     }
   }
