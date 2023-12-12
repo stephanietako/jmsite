@@ -13,7 +13,7 @@ const CardSkeleton = ({ imageRef }) => (
     foregroundColor="#ecebeb"
     style={{ width: "100%", height: "100%", backgroundColor: "silver" }}
   >
-    <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
+    <rect x="0" y="0" rx="80" ry="80" width="100%" height="100%" />
   </ContentLoader>
 );
 
