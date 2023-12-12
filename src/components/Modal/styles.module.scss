@@ -1,0 +1,64 @@
+.overlay {
+  display: flex;
+  background-color: #000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+
+  .__modalContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+
+    .__modal_content {
+      width: 80%;
+      height: auto;
+
+      .__closeBtn {
+        position: fixed;
+        bottom: 14px;
+        right: 8px;
+        width: auto;
+        height: auto;
+        cursor: pointer;
+        padding-right: 1rem;
+        p {
+          font-size: 1.5rem;
+          font-style: normal;
+          color: #fff;
+          text-transform: capitalize;
+          &:hover {
+            color: silver;
+          }
+        }
+      }
+
+      .__content {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+//////////////////////// RESPONSIVE ///////////////////////////////
+@media only screen and (max-width: 768px) {
+  .overlay {
+    .__modalContainer {
+      display: flex;
+      position: absolute;
+      height: auto;
+      border: 2px solid red;
+      margin-top: 4rem;
+    }
+  }
+}

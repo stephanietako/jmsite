@@ -22,3 +22,8 @@ a {
   color: #fff;
   cursor: pointer;
 }
+
+li {
+  text-decoration: none;
+  list-style-type: none;
+}
