@@ -3,6 +3,7 @@
   width: 100%;
   align-items: center;
   height: 100%;
+  background-color: #000;
 
   .__container {
     background-color: transparent;
@@ -20,7 +21,7 @@
 
       img {
         object-fit: cover;
-        width: 35%;
+        width: 25%;
         height: auto;
       }
     }
