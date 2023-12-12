@@ -12,34 +12,35 @@ import cosmos from "../../assets/images/moon.webp";
 //MOON SPHERE
 const MoonObject = () => {
   const [cosmosMap, wolfMap] = useLoader(TextureLoader, [cosmos, wolf]);
-
-  // const isMobile = window.innerWidth <= 768;
-  // const groupScale = isMobile ? [0.8, 0.8, 0.8] : [1.7, 1.7, 1.7];
-  // const groupPosition = isMobile ? [0, 1.2, 0] : [2, 0, 0.8];
   const isMobile = window.innerWidth <= 768;
-  const isExtraSmall = window.innerWidth <= 600;
+  const isExtraSmall = window.innerWidth <= 375;
   const isMedium = window.innerWidth <= 1024;
 
   // Condition media queries scale and position animation
   let groupScale, groupPosition;
-  // 500
+  // 375
   if (isExtraSmall) {
     groupScale = [0.9, 0.9, 0.9];
     groupPosition = [0, 1.4, 0];
+    console.log("groupe scale extra small", [0.9, 0.9, 0.9]);
     // 768
   } else if (isMobile) {
-    groupScale = [1.4, 1.4, 1.4];
+    groupScale = [1.2, 1.2, 1.2];
     groupPosition = [0, 0, 0.8];
+    console.log("groupe scale mobile", [0, 0, 0.8]);
+    // 1024
   } else if (isMedium) {
-    groupScale = [1.7, 1.7, 1.7];
+    groupScale = [1.5, 1.5, 1.5];
     groupPosition = [0, -2, 0];
+    console.log("groupe scale medium", [1.5, 1.5, 1.5]);
   } else {
     groupScale = [1.7, 1.7, 1.7];
     groupPosition = [0, 0, 0];
+    console.log("groupe scale standard", [1.7, 1.7, 1.7]);
   }
+
   return (
     <group position={groupPosition} scale={groupScale}>
-      );
       <directionalLight intensity={0.3} position={[0, 2, 1]} />
       <pointLight position={[50, 50, 50]} angle={0.15} penumbra={1} />
       <ambientLight intensity={9} />
