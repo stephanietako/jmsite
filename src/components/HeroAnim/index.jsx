@@ -36,7 +36,7 @@ const MoonObject = () => {
   } else {
     groupScale = [1.7, 1.7, 1.7];
     groupPosition = [0, 0, 0];
-    console.log("groupe scale standard", [1.7, 1.7, 1.7]);
+    console.log("groupe scale standard", [1.8, 1.8, 1.8]);
   }
 
   return (

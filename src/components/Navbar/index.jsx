@@ -34,7 +34,11 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.__logo}>
         <a href="/">
-          <img className={styles.__logo} src={logo} alt="Tako dev logo" />
+          <img
+            className={styles.__logo}
+            src={logo}
+            alt="Jean-Marc graphiste motion design logo"
+          />
         </a>
       </div>
 

@@ -13,7 +13,7 @@ const Maintenance = () => {
           />
         </div>
         <div className={styles.__txt}>
-          <p>Bientôt le site de Jean-Marc Eiliette</p>
+          <p>Bientôt le site de Jean-Marc Eliette</p>
           <p>Développement en cours....</p>
         </div>
       </div>

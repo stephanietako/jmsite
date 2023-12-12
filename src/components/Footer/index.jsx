@@ -6,7 +6,7 @@ import logo from "../../assets/logo/jmlogo.jpg";
 const Footer = () => {
   const date = new Date();
   const currentYear = date.getFullYear();
-
+  const takodevURL = process.env.REACT_APP_TAKO_URL;
   return (
     <div className={styles.footer}>
       <footer className={styles.__container}>
@@ -16,14 +16,21 @@ const Footer = () => {
               <img
                 className={styles.__logo}
                 src={logo}
-                alt="Jean-Marc Eliette logo"
+                alt="Jean-Marc graphiste motion design logo"
               />
             </a>
           </li>
           <li>
             <div className={styles.__copyright}>
-              &#169; Copyright {currentYear} | Tako Dev
+              &#169; Copyright {currentYear}
             </div>
+          </li>
+          <li>
+            <span>
+              <a href={takodevURL} rel="noopener noreferrer">
+                <p> | Tako Dev</p>
+              </a>
+            </span>
           </li>
         </ul>
       </footer>
