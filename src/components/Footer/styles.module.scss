@@ -18,18 +18,11 @@
     justify-content: center;
 
     .__logo {
-      width: auto;
-      max-height: 9rem;
+      width: 5rem;
       object-fit: cover;
+      height: auto;
+      padding-top: 0.5rem;
     }
-
-    // .__copyright {
-    //   display: flex;
-    //   flex-wrap: wrap;
-    //   color: #fff;
-    //   font-size: 24px;
-    //   width: 100%;
-    // }
 
     ul {
       display: flex;
@@ -75,7 +68,8 @@
       width: 100%;
       justify-content: start;
       .__logo {
-        height: 4rem;
+        width: 4rem;
+        padding-bottom: 0.5rem;
       }
       .__copyright {
         font-size: 22px;
@@ -91,7 +85,8 @@
       width: 100%;
       justify-content: start;
       .__logo {
-        height: 3rem;
+        width: 3rem;
+        padding-bottom: 0.7rem;
       }
       .__copyright {
         font-size: 18px;
