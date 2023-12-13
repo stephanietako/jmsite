@@ -26,7 +26,7 @@ const Footer = () => {
             </div>
           </li>
           <li>
-            <span>
+            <span className={styles.__takodev}>
               <a href={takodevURL} rel="noopener noreferrer">
                 <p> | Tako Dev</p>
               </a>
