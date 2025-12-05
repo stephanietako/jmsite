@@ -6,7 +6,7 @@ import logo from "../../assets/logo/jmlogo.jpg";
 const Footer = () => {
   const date = new Date();
   const currentYear = date.getFullYear();
-  const takodevURL = process.env.REACT_APP_TAKO_URL;
+  const takodevURL = import.meta.env.VITE_TAKO_URL;
   return (
     <div className={styles.footer}>
       <footer className={styles.__container}>

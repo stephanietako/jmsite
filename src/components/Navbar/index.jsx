@@ -8,8 +8,8 @@ import email from "../../assets/icon/at-clear.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const linkedinURL = process.env.REACT_APP_LINKEDIN_URL;
-  const emailAdress = process.env.REACT_APP_EMAIL_URL;
+  const linkedinURL = import.meta.env.VITE_LINKEDIN_URL;
+  const emailAdress = import.meta.env.VITE_EMAIL_URL;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 980);
 
   const toggleMenu = () => setIsOpen(!isOpen);

@@ -1,4 +1,4 @@
-@import "./style/fonts.scss";
+@use "./style/fonts.scss" as *;
 
 * {
   margin: 0;

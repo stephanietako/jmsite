@@ -3,44 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-three/drei": "^9.88.17",
-    "@react-three/fiber": "^8.15.11",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "postprocessing": "^6.33.3",
-    "react": "^18.2.0",
-    "react-content-loader": "^6.2.1",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "react-scripts": "^5.0.1",
-    "sass": "^1.69.5",
-    "three": "^0.158.0",
-    "web-vitals": "^2.1.4"
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "postprocessing": "^6.38.0",
+    "react": "^19.2.1",
+    "react-content-loader": "^7.1.1",
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.1",
+    "sass": "^1.94.2",
+    "three": "^0.181.2"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "react-scripts build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "@babel/plugin-transform-private-property-in-object": "^7.23.4"
+    "@babel/plugin-transform-private-property-in-object": "^7.27.1",
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.6"
   }
 }
