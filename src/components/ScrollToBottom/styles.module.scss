@@ -1,37 +1,56 @@
-.toBottomBtn {
-  display: flex;
-  width: 100%;
-  height: auto;
-  position: relative;
-  justify-content: flex-end;
-  z-index: 2;
+.scrollBtn {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
 
-  .__icon_position {
-    background: transparent;
-    right: 10px;
-    display: flex;
-    width: auto;
-    height: 50%;
-    position: fixed;
-    top: 50%;
-    border: none;
-    img {
-      object-fit: cover;
-      width: 2rem;
-      height: auto;
-      cursor: pointer;
-      z-index: 999;
-      align-self: center;
-      position: relative;
-    }
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
 }
 
-///////////////////////// RESPONSIVE //////////////////////
-@media only screen and (max-width: 768px) {
+.__icon_position {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .__icon_style {
+    width: 40px;
+    height: auto;
+    display: block;
+  }
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .scrollBtn,
   .__icon_position {
-    img {
-      width: 1.5rem;
-    }
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+////////RESPONSIVE//////////
+// Mobile
+@media only screen and (max-width: 768px) {
+  .__icon_style {
+    width: 1.5rem;
   }
 }

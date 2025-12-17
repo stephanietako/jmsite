@@ -7,20 +7,16 @@ const Home = lazy(() => import("./pages/Home"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
 
 const App = () => {
+  const isMaintenance = JSON.parse(import.meta.env.VITE_MODE_MAINTENANCE);
+
   return (
     <div className="App">
       <Router>
-        <Suspense fallback={<div>Chargement…</div>}>
+        <Suspense>
           <Routes>
             <Route
               path="/"
-              element={
-                JSON.parse(import.meta.env.VITE_MODE_MAINTENANCE) ? (
-                  <Maintenance />
-                ) : (
-                  <Home />
-                )
-              }
+              element={isMaintenance ? <Maintenance /> : <Home />}
             />
           </Routes>
         </Suspense>

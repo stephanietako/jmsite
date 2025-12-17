@@ -1,87 +1,39 @@
-import { useState, useEffect } from "react";
-import styles from "./styles.module.scss";
 import logo from "../../assets/logo/jmlogo.jpg";
-import menu from "../../assets/icon/menu-clear.png";
-import cross from "../../assets/icon/cross-clear.png";
 import linkedin from "../../assets/icon/linkedin-clear.png";
 import email from "../../assets/icon/at-clear.png";
+// Styles
+import styles from "./styles.module.scss";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const linkedinURL = import.meta.env.VITE_LINKEDIN_URL;
-  const emailAdress = import.meta.env.VITE_EMAIL_URL;
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 980);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 980);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Menu
   const menuItems = [
-    { id: 1, icon: linkedin, link: linkedinURL, alt: "linkedin icon" },
-    { id: 2, icon: email, link: `mailto:${emailAdress}`, alt: "email icon" },
+    {
+      id: 1,
+      icon: linkedin,
+      link: import.meta.env.VITE_LINKEDIN_URL,
+      alt: "LinkedIn",
+    },
+    {
+      id: 2,
+      icon: email,
+      link: `mailto:${import.meta.env.VITE_EMAIL_URL}`,
+      alt: "Email",
+    },
   ];
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.__logo}>
-        <a href="/">
-          <img
-            className={styles.__logo}
-            src={logo}
-            alt="Jean-Marc graphiste motion design logo"
-          />
-        </a>
-      </div>
-
-      {/* Desktop */}
-      {!isMobile && (
-        <ul className={styles.__nav_menu}>
-          {menuItems.map((item) => (
-            <li key={item.id}>
-              <a href={item.link} rel="noopener noreferrer">
-                <img
-                  className={styles.__icons_link}
-                  src={item.icon}
-                  alt={item.alt}
-                />
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Mobile */}
-      {isMobile && (
-        <div className={styles.__nav_burger_menu}>
-          <button className={styles.__burger_btn} onClick={toggleMenu}>
-            <img src={isOpen ? cross : menu} alt={isOpen ? "Menu" : "Cross"} />
-          </button>
-          {isOpen && (
-            <ul className={styles.__menu_mobile}>
-              {menuItems.map((item) => (
-                <li key={item.id}>
-                  <a href={item.link} rel="noopener noreferrer">
-                    <img
-                      className={styles.__icons_link}
-                      src={item.icon}
-                      alt={item.alt}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+    <nav className={styles.navbar} aria-label="Navigation principale">
+      <a href="/" className={styles.logo}>
+        <img src={logo} alt="Logo Jean-Marc" />
+      </a>
+      <ul className={styles.menu}>
+        {menuItems.map((item) => (
+          <li key={item.id}>
+            <a href={item.link} target="_blank" rel="noopener noreferrer">
+              <img src={item.icon} alt={item.alt} className={styles.icon} />
+            </a>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 };
