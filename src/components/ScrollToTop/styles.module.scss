@@ -35,7 +35,7 @@
     }
   }
 }
-
+////////RESPONSIVE//////////
 /* Réduction du mouvement pour accessibilité */
 @media (prefers-reduced-motion: reduce) {
   .scrollBtn,
@@ -44,7 +44,7 @@
     transform: none !important;
   }
 }
-////////RESPONSIVE//////////
+
 // Mobile
 @media only screen and (max-width: 768px) {
   .__icon_position .__icon_style {

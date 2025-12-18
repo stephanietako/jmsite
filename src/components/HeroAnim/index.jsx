@@ -61,11 +61,7 @@ const MoonObject = () => {
   const geoSegments = isSmall ? 24 : isMobile ? 40 : 64;
 
   return (
-    <group
-      ref={groupRef}
-      scale={[scale, scale, scale]}
-      position={[-0.8, -0.2, 0]}
-    >
+    <group ref={groupRef} scale={[scale, scale, scale]} position={[-0.8, 0, 0]}>
       <ambientLight intensity={0.8} />
       <directionalLight intensity={1.2} position={[2, 4, 6]} />
 
@@ -90,6 +86,9 @@ const WolfBillboard = ({ positionX = 1.1, positionY = 0.7 }) => {
   const ref = useRef();
   const { camera } = useThree();
   const [opacity, setOpacity] = useState(0.7);
+  const dragging = useRef(false);
+  const lastX = useRef(0);
+  const spinVelocity = useRef(0);
 
   useEffect(() => {
     wolfMap.colorSpace = THREE.SRGBColorSpace;
@@ -111,7 +110,14 @@ const WolfBillboard = ({ positionX = 1.1, positionY = 0.7 }) => {
 
   useFrame(() => {
     if (ref.current) {
+      // face the camera, then apply any user-driven spin around Y
       ref.current.lookAt(camera.position);
+      if (spinVelocity.current) {
+        ref.current.rotation.y += spinVelocity.current;
+        // simple damping for inertial feel
+        spinVelocity.current *= 0.92;
+        if (Math.abs(spinVelocity.current) < 1e-5) spinVelocity.current = 0;
+      }
 
       if (ref.current.position.z > targetZ) {
         ref.current.position.z +=
@@ -212,12 +218,53 @@ const WolfBillboard = ({ positionX = 1.1, positionY = 0.7 }) => {
         material={material}
         renderOrder={10}
         frustumCulled
+        onPointerDown={(e) => {
+          // capture drag for rotating the billboard; stop propagation so OrbitControls doesn't steal it
+          e.stopPropagation();
+          dragging.current = true;
+          lastX.current = e.clientX || e.nativeEvent.clientX;
+        }}
+        onPointerMove={(e) => {
+          if (!dragging.current) return;
+          const clientX = e.clientX || e.nativeEvent.clientX;
+          const dx = clientX - lastX.current;
+          // sensitivity tweak: smaller value for finer control
+          spinVelocity.current = dx * 0.01;
+          lastX.current = clientX;
+        }}
+        onPointerUp={(e) => {
+          e.stopPropagation();
+          dragging.current = false;
+        }}
+        onPointerLeave={() => {
+          dragging.current = false;
+        }}
       />
     </>
   );
 };
 
 /* 🎮 Contrôles orbitaux */
+// const Controls = () => {
+//   const [width] = useWindowSize();
+//   const [autoRotate, setAutoRotate] = useState(true);
+//   const autoRotateSpeed = useMemo(() => (width <= 768 ? 0.6 : 0.9), [width]);
+
+//   return (
+//     <OrbitControls
+//       enablePan={false}
+//       enableZoom={false}
+//       autoRotate={autoRotate}
+//       autoRotateSpeed={autoRotateSpeed}
+//       enableRotate={true}
+//       onStart={() => setAutoRotate(false)} // désactive quand on touche la souris
+//       onEnd={() => setAutoRotate(true)} // réactive après
+//       enableDamping
+//       dampingFactor={0.05}
+//     />
+//   );
+// };
+
 const Controls = () => {
   const [width] = useWindowSize();
   const autoRotateSpeed = useMemo(() => (width <= 768 ? 0.6 : 0.9), [width]);
@@ -326,7 +373,13 @@ const HeroAnim = ({ wolfX = 1.1, wolfY = -0.2 }) => {
           alpha: false,
           powerPreference: "high-performance",
         }}
-        style={{ background: "#000000" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          inset: 0,
+          background: "#000000",
+        }}
       >
         <CinematicZoom />
         <Suspense fallback={<Loader />}>

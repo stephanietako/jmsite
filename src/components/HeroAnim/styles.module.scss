@@ -1,21 +1,23 @@
 .wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - var(--navbar-height));
+  max-height: none;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   border-radius: 1rem;
   background: transparent;
+  border: 5px solid yellow;
+  margin-top: 0;
 }
 
 .canvas {
   width: 100% !important;
   height: 100% !important;
   position: absolute !important;
-  top: 0;
-  left: 0;
+  inset: 0;
   display: block;
   overflow: hidden;
   background: radial-gradient(ellipse at center, #050505 0%, #000 100%);
@@ -37,7 +39,6 @@
   z-index: 2;
 }
 
-/* Pour forcer le canvas à remplir son parent dans toutes les configurations */
 :global(canvas) {
   width: 100% !important;
   height: 100% !important;
@@ -45,22 +46,18 @@
   transform: translateZ(0);
 }
 
-/* Responsive tuning (tablettes) : inchangé ou peu modifié */
 @media (max-width: 900px) {
   .wrapper {
-    height: 400px;
+    height: calc(420px - var(--navbar-height));
   }
 }
 
-/////////RESPONSIVE//////////
-/* Mobile  */
 @media (max-width: 600px) {
   .wrapper {
-    height: 420px;
-    min-height: 360px;
+    height: calc(400px - var(--navbar-height));
+    min-height: 100%;
   }
 
-  /* POUR éviter les opérations coûteuses côté CSS sur mobile */
   .canvas {
     background: radial-gradient(ellipse at center, #050505 0%, #000 100%);
     filter: none;
