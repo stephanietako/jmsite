@@ -40,10 +40,7 @@ const ScrollToBottom = () => {
   }, []);
 
   return (
-    <div
-      className={`${styles.scrollBtn} ${visible ? styles.visible : ""}`}
-      aria-hidden={!visible}
-    >
+    <div className={`${styles.scrollBtn} ${styles.visible}`}>
       <button
         type="button"
         className={styles.__icon_position}

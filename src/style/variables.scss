@@ -1,0 +1,31 @@
+:root {
+  --navbar-height: 64px;
+  --white: #ffffff;
+  --accent: var(--white);
+  --hero-bg-fallback: rgba(24, 24, 24, 0.88);
+  --btn-bg: transparent;
+  --btn-border: 1px solid rgba(255, 255, 255, 0.12);
+  --btn-blur: blur(8px) brightness(1);
+  --btn-focus: 0 0 0 4px rgba(255, 255, 255, 0.08);
+  --btn-radius: 2rem;
+  --color-text: #ffffff;
+  --color-muted: #b0b0b0;
+  --bg-overlay: rgba(20, 20, 20, 0.18);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --max-width: 1200px;
+  --overlay-light: rgba(24, 24, 24, 0.09);
+  --card-shadow-dark: rgba(0, 0, 0, 0.22);
+  --card-outline: rgba(255, 255, 255, 0.1);
+  --card-inner: rgba(255, 255, 255, 0.18);
+  --canvas-bg-start: #050505;
+  --canvas-bg-end: #000000;
+  --overlay-gradient-end: rgba(0, 0, 0, 0.4);
+}
+
+$max-width: 1200px;
+$bg: rgba(20, 20, 20, 0.18);
+$border: rgba(255, 255, 255, 0.08);
+$text: #ffffff;
+$muted: #b0b0b0;
+$shadow: rgba(0, 0, 0, 0.08);

@@ -8,16 +8,23 @@ import {
   Html,
 } from "@react-three/drei";
 import * as THREE from "three";
+// Styles
 import styles from "./styles.module.scss";
 import wolf from "@/assets/images/mutation_Wolf_copie.webp";
 import cosmos from "@/assets/images/moon.webp";
 
-/* 📱 Hook responsive optimisé */
+/*
+  Hook responsive: renvoie la taille actuelle de la fenêtre.
+  Utilisé pour adapter le FOV, le DPR et certains paramètres responsive.
+*/
+
 function useWindowSize() {
-  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
+  // SSR-safe: initialise côté serveur puis met à jour côté client
+  const [size, setSize] = useState([0, 0]);
 
   useEffect(() => {
     const handleResize = () => setSize([window.innerWidth, window.innerHeight]);
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -25,7 +32,6 @@ function useWindowSize() {
   return size;
 }
 
-/* 🔄 Loader personnalisé */
 const Loader = () => (
   <Html center>
     <div
@@ -41,354 +47,445 @@ const Loader = () => (
   </Html>
 );
 
-/* 🌕 Lune rotative optimisée */
+/* MoonObject: sphère texturée (lune) avec rotation et éclairage. */
 const MoonObject = () => {
   const cosmosMap = useTexture(cosmos);
-  const [width] = useWindowSize();
   const groupRef = useRef();
-
-  // Animation de rotation
   useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += 0.004;
-    }
+    if (groupRef.current) groupRef.current.rotation.y += 0.002;
   });
 
-  // Responsive scale and LOD for geometry
-  const isMobile = width <= 600;
-  const isSmall = width <= 360;
-  const scale = isSmall ? 0.8 : isMobile ? 1 : 1.15;
-  const geoSegments = isSmall ? 24 : isMobile ? 40 : 64;
-
   return (
-    <group ref={groupRef} scale={[scale, scale, scale]} position={[-0.8, 0, 0]}>
+    <group ref={groupRef} position={[0, 0, 0]}>
       <ambientLight intensity={0.8} />
-      <directionalLight intensity={1.2} position={[2, 4, 6]} />
-
-      <mesh>
-        <sphereGeometry args={[1, geoSegments, geoSegments]} />
+      <directionalLight intensity={1.4} position={[2, 4, 6]} />
+      <mesh renderOrder={1}>
+        <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
           map={cosmosMap}
           metalness={0.5}
           roughness={0.6}
-          transparent
-          opacity={1.1}
-          side={THREE.DoubleSide}
+          emissive="#444"
+          emissiveIntensity={0.15}
         />
       </mesh>
     </group>
   );
 };
 
-/* 🐺 Loup avec shader */
-const WolfBillboard = ({ positionX = 1.1, positionY = 0.7 }) => {
+// Constantes de détection du « tap » — valeurs par défaut pour distinguer un « tap »
+// (appui court sans mouvement) d'un glissement. Ajuster si nécessaire selon
+// le comportement tactile des appareils cibles.
+const TAP_TIME_MS = 250; // durée max (ms) pour considérer un tap
+const TAP_MOVE_PX = 8; // déplacement max (px) pour considérer un tap
+
+/*
+  WolfBillboard: billboard orbitant la lune.
+  - inertie (`spinVelocity`)
+  - interaction pointer / clavier
+  - expose `apiRef` (addSpin, reset, setPaused)
+*/
+const WolfBillboard = ({
+  positionY = -0.2,
+  apiRef = null,
+  onPauseChange = null,
+}) => {
   const wolfMap = useTexture(wolf);
-  const ref = useRef();
-  const { camera } = useThree();
-  const [opacity, setOpacity] = useState(0.7);
-  const dragging = useRef(false);
-  const lastX = useRef(0);
-  const spinVelocity = useRef(0);
+  const groupRef = useRef();
+  const meshRef = useRef();
+  const { camera, gl } = useThree();
+
+  const animState = useRef({
+    theta: Math.PI / 2,
+    opacity: 0,
+    scale: 0.7,
+    dragging: false,
+    lastX: 0,
+    spinVelocity: 0,
+    paused: false,
+    // Suivi du pointeur / détection de tap
+    pointerId: null,
+    startX: 0,
+    startY: 0,
+    pointerDownTime: 0,
+  });
 
   useEffect(() => {
     wolfMap.colorSpace = THREE.SRGBColorSpace;
     wolfMap.anisotropy = 16;
   }, [wolfMap]);
 
-  const startZ = 2.0 + 0.5;
-  const targetZ = 2.2 + 0.5;
-  const easePosition = 0.005;
-  const easeOpacity = 0.02;
+  const material = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        uniforms: {
+          map: { value: wolfMap },
+          opacity: { value: 0 },
+          fogColor: { value: new THREE.Color(0x0a1628) },
+        },
+        vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+        fragmentShader: `
+      uniform sampler2D map;
+      uniform float opacity;
+      uniform vec3 fogColor;
+      varying vec2 vUv;
+      void main() {
+        vec4 texColor = texture2D(map, vUv);
+        float verticalFade = smoothstep(0.05, 0.42, vUv.y);
+        float horizontalMask = 1.0 - smoothstep(0.2, 0.3, abs(vUv.x - 0.54));
+        float fadeFactor = (vUv.y < 0.42) ? mix(1.0, verticalFade, horizontalMask) : 1.0;
+        float boostedAlpha = clamp(mix(fadeFactor, 1.0, smoothstep(0.5, 0.9, vUv.y) * 0.35), 0.8, 1.0);
+        vec3 finalColor = mix(texColor.rgb * (1.0 + opacity * 0.3), fogColor, clamp((1.0 - fadeFactor) * 1.5, 0.0, 1.0));
+        gl_FragColor = vec4(finalColor, texColor.a * boostedAlpha * opacity);
+      }
+    `,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      }),
+    [wolfMap]
+  );
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.position.z = startZ;
-      ref.current.position.x = positionX;
-      ref.current.position.y = positionY;
+  // Boucle frame : met à jour la position orbitale, l'apparence et l'inertie
+  useFrame(({ clock }) => {
+    if (!groupRef.current || !meshRef.current) return;
+    const t = clock.getElapsedTime();
+    const state = animState.current;
+
+    if (state.paused) return; // en pause
+
+    state.theta = (state.theta + 0.0032) % (Math.PI * 2);
+    state.opacity = THREE.MathUtils.lerp(state.opacity, 1, 0.045);
+    state.scale = THREE.MathUtils.lerp(state.scale, 1, 0.025);
+
+    const dR = 2.7 + Math.sin(t * 0.45) * 0.15;
+    groupRef.current.position.x = dR * Math.cos(state.theta);
+    groupRef.current.position.z =
+      dR * Math.sin(state.theta) + Math.sin(t * 0.45) * 0.03;
+    groupRef.current.position.y = positionY;
+
+    groupRef.current.lookAt(camera.position);
+
+    if (state.spinVelocity !== 0) {
+      // Applique la rotation à l'angle orbital (`theta`) avec amortissement
+      state.theta = (state.theta + state.spinVelocity) % (Math.PI * 2);
+      state.spinVelocity *= 0.92;
+      if (Math.abs(state.spinVelocity) < 0.001) state.spinVelocity = 0;
     }
-  }, [positionX, positionY]);
 
-  useFrame(() => {
-    if (ref.current) {
-      // face the camera, then apply any user-driven spin around Y
-      ref.current.lookAt(camera.position);
-      if (spinVelocity.current) {
-        ref.current.rotation.y += spinVelocity.current;
-        // simple damping for inertial feel
-        spinVelocity.current *= 0.92;
-        if (Math.abs(spinVelocity.current) < 1e-5) spinVelocity.current = 0;
-      }
-
-      if (ref.current.position.z > targetZ) {
-        ref.current.position.z +=
-          (targetZ - ref.current.position.z) * easePosition;
-      }
-
-      ref.current.position.x = positionX;
-      ref.current.position.y = positionY;
-
-      if (opacity < 1) {
-        setOpacity((prev) => Math.min(prev + easeOpacity, 1));
-      }
-    }
+    meshRef.current.scale.set(
+      2.8 * state.scale,
+      2 * state.scale,
+      3.5 * state.scale
+    );
+    material.uniforms.opacity.value = state.opacity;
   });
 
-  const material = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      uniforms: {
-        map: { value: wolfMap },
-        opacity: { value: opacity },
-        fogColor: { value: new THREE.Color(0x0a1628) },
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-  uniform sampler2D map;
-  uniform float opacity;
-  uniform vec3 fogColor;
-  varying vec2 vUv;
-
-  void main() {
-    vec4 texColor = texture2D(map, vUv);
-
-    float fadeStart = 0.45;
-    float fadeEnd = 0.0;
-    float verticalFade = smoothstep(fadeEnd, fadeStart, vUv.y);
-
-    float centerX = 0.54;
-    float fadeWidth = 0.2;
-    float horizontalMask = 1.0 - smoothstep(fadeWidth, fadeWidth + 0.1, abs(vUv.x - centerX));
-
-    float fadeFactor = 1.0;
-    if (vUv.y < fadeStart) {
-      fadeFactor = mix(1.0, verticalFade, horizontalMask);
-    }
-
-    float topBoost = smoothstep(0.5, 0.9, vUv.y);
-    float boostedAlpha = mix(fadeFactor, 1.0, topBoost * 0.35);
-
-    float fogStrength = 1.5;
-    float fogMix = (1.0 - fadeFactor) * fogStrength;
-    fogMix = clamp(fogMix, 0.0, 1.0);
-    vec3 finalColor = mix(texColor.rgb, fogColor, fogMix);
-
-    float finalAlpha = texColor.a * boostedAlpha * opacity;
-
-    gl_FragColor = vec4(finalColor, finalAlpha);
-  }
-`,
-      transparent: true,
-      side: THREE.DoubleSide,
-      depthTest: true,
-    });
-  }, [wolfMap, opacity]);
-
+  // Expose `apiRef` : addSpin, setSpin, reset, setPaused
   useEffect(() => {
-    if (material.uniforms) {
-      material.uniforms.opacity.value = opacity;
-    }
-  }, [material, opacity]);
+    if (!apiRef) return;
+    apiRef.current = {
+      addSpin: (delta) => (animState.current.spinVelocity += delta),
+      setSpin: (v) => (animState.current.spinVelocity = v),
+      reset: () => {
+        animState.current.theta = Math.PI / 2;
+        animState.current.spinVelocity = 0;
+      },
+      // setPaused met à jour l'état interne et notifie le parent via onPauseChange
+      setPaused: (p) => {
+        animState.current.paused = Boolean(p);
+        if (typeof onPauseChange === "function") onPauseChange(Boolean(p));
+      },
+    };
+    return () => {
+      if (apiRef.current) apiRef.current = null;
+    };
+  }, [apiRef, onPauseChange]);
 
-  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1.3), []);
-
+  // Handlers pointer : drag -> spin, tap -> bascule pause (utilise pointer capture)
   return (
-    <>
-      <directionalLight
-        position={[2, 4, 4]}
-        intensity={0.7}
-        color="#fffbe6"
-        castShadow
-      />
-      <pointLight
-        position={[5.5, 0.3, 7.5]}
-        intensity={0.6}
-        color="#b0d8ff"
-        distance={4}
-      />
-
+    <group ref={groupRef}>
       <mesh
-        ref={ref}
-        scale={[2.8, 2, 3.5]}
-        geometry={geometry}
+        ref={meshRef}
         material={material}
-        renderOrder={10}
-        frustumCulled
+        renderOrder={2}
         onPointerDown={(e) => {
-          // capture drag for rotating the billboard; stop propagation so OrbitControls doesn't steal it
           e.stopPropagation();
-          dragging.current = true;
-          lastX.current = e.clientX || e.nativeEvent.clientX;
+          animState.current.dragging = true;
+          animState.current.lastX = e.clientX;
+          animState.current.startX = e.clientX;
+          animState.current.startY = e.clientY;
+          animState.current.pointerDownTime = performance.now();
+          animState.current.pointerId = e.pointerId || null;
+          // Essayer setPointerCapture sur le canvas pour fiabiliser le drag tactile
+          try {
+            if (
+              gl &&
+              gl.domElement &&
+              typeof gl.domElement.setPointerCapture === "function"
+            ) {
+              gl.domElement.setPointerCapture(e.pointerId);
+            }
+          } catch (err) {
+            // ignorer les erreurs liées à l'API Pointer
+          }
         }}
         onPointerMove={(e) => {
-          if (!dragging.current) return;
-          const clientX = e.clientX || e.nativeEvent.clientX;
-          const dx = clientX - lastX.current;
-          // sensitivity tweak: smaller value for finer control
-          spinVelocity.current = dx * 0.01;
-          lastX.current = clientX;
+          if (!animState.current.dragging) return;
+          const dx = e.clientX - animState.current.lastX;
+          animState.current.spinVelocity = dx * 0.01;
+          animState.current.lastX = e.clientX;
         }}
         onPointerUp={(e) => {
-          e.stopPropagation();
-          dragging.current = false;
+          animState.current.dragging = false;
+          // Relâcher la capture du pointeur (si active)
+          try {
+            if (
+              gl &&
+              gl.domElement &&
+              typeof gl.domElement.releasePointerCapture === "function"
+            ) {
+              gl.domElement.releasePointerCapture(e.pointerId);
+            }
+          } catch (err) {}
+
+          // Détection de tap (court + faible déplacement) -> bascule pause
+          const now = performance.now();
+          const dt = now - (animState.current.pointerDownTime || 0);
+          const dx = e.clientX - (animState.current.startX || 0);
+          const dy = e.clientY - (animState.current.startY || 0);
+          const dist = Math.hypot(dx, dy);
+          if (dt < TAP_TIME_MS && dist < TAP_MOVE_PX) {
+            const next = !animState.current.paused;
+            // Préférer `apiRef` si disponible ; sinon mettre à jour l'état local
+            if (
+              apiRef &&
+              apiRef.current &&
+              typeof apiRef.current.setPaused === "function"
+            ) {
+              apiRef.current.setPaused(next);
+            } else {
+              animState.current.paused = next;
+              if (typeof onPauseChange === "function") onPauseChange(next);
+            }
+          }
         }}
-        onPointerLeave={() => {
-          dragging.current = false;
+        onPointerCancel={(e) => {
+          animState.current.dragging = false;
+          try {
+            if (
+              gl &&
+              gl.domElement &&
+              typeof gl.domElement.releasePointerCapture === "function"
+            ) {
+              gl.domElement.releasePointerCapture(
+                e.pointerId || animState.current.pointerId
+              );
+            }
+          } catch (err) {
+            // ignorer
+          }
         }}
-      />
-    </>
+        onPointerLeave={(e) => {
+          animState.current.dragging = false;
+          try {
+            if (
+              gl &&
+              gl.domElement &&
+              typeof gl.domElement.releasePointerCapture === "function"
+            ) {
+              gl.domElement.releasePointerCapture(
+                e.pointerId || animState.current.pointerId
+              );
+            }
+          } catch (err) {
+            // ignorer
+          }
+        }}
+      >
+        <planeGeometry args={[1, 1.3]} />
+      </mesh>
+    </group>
   );
 };
-
-/* 🎮 Contrôles orbitaux */
-// const Controls = () => {
-//   const [width] = useWindowSize();
-//   const [autoRotate, setAutoRotate] = useState(true);
-//   const autoRotateSpeed = useMemo(() => (width <= 768 ? 0.6 : 0.9), [width]);
-
-//   return (
-//     <OrbitControls
-//       enablePan={false}
-//       enableZoom={false}
-//       autoRotate={autoRotate}
-//       autoRotateSpeed={autoRotateSpeed}
-//       enableRotate={true}
-//       onStart={() => setAutoRotate(false)} // désactive quand on touche la souris
-//       onEnd={() => setAutoRotate(true)} // réactive après
-//       enableDamping
-//       dampingFactor={0.05}
-//     />
-//   );
-// };
-
-const Controls = () => {
-  const [width] = useWindowSize();
-  const autoRotateSpeed = useMemo(() => (width <= 768 ? 0.6 : 0.9), [width]);
-
-  return (
-    <OrbitControls
-      enablePan={false}
-      enableZoom={false}
-      autoRotate
-      autoRotateSpeed={autoRotateSpeed}
-      minPolarAngle={Math.PI / 3}
-      maxPolarAngle={Math.PI / 1.5}
-      enableDamping
-      dampingFactor={0.05}
-    />
-  );
-};
-
-/* 🌌 Fond étoilé */
-const StarsBackground = () => {
-  const starsRef = useRef();
-  const [width] = useWindowSize();
-
-  useEffect(() => {
-    if (starsRef.current) {
-      starsRef.current.material.depthWrite = false;
-      starsRef.current.renderOrder = 1;
-    }
-  }, []);
-
-  const starCount = useMemo(() => {
-    if (width <= 360) return 4000;
-    if (width <= 600) return 5000;
-    if (width <= 768) return 6000;
-    return 8000;
-  }, [width]);
-
-  return (
-    <>
-      <Stars
-        ref={starsRef}
-        radius={300}
-        depth={100}
-        count={starCount}
-        factor={7}
-        saturation={0}
-        fade
-        speed={0.2}
-      />
-      <Environment preset="night" />
-      <fog attach="fog" args={["#000000", 10, 50]} />
-    </>
-  );
-};
-
-/* 🎥 Zoom cinématique */
+/*
+  CinematicZoom: animation d'entrée de la caméra.
+  - Interpôle la position Z de la caméra depuis une valeur de départ
+    vers une cible pour obtenir un zoom d'introduction.
+  - Légers mouvements de caméra ajoutés pour dynamiser la scène.
+*/
 const CinematicZoom = () => {
-  const { camera } = useThree();
+  const { camera, controls } = useThree();
   const [width] = useWindowSize();
-
-  const config = useMemo(() => {
-    if (width <= 360) return { targetZ: 6.8, startZ: 9.2, ease: 0.03 };
-    if (width <= 600) return { targetZ: 6.5, startZ: 9, ease: 0.03 };
-    if (width <= 768) return { targetZ: 6, startZ: 8.5, ease: 0.03 };
-    return { targetZ: 5.5, startZ: 8, ease: 0.03 };
-  }, [width]);
-
-  useEffect(() => {
-    camera.position.z = config.startZ;
-  }, [camera, config.startZ]);
+  const targetZ = width <= 600 ? 6.5 : 5.5;
+  const isDone = useRef(false);
 
   useFrame(() => {
-    if (camera.position.z > config.targetZ) {
-      camera.position.z += (config.targetZ - camera.position.z) * config.ease;
-      if (Math.abs(camera.position.z - config.targetZ) < 0.01) {
-        camera.position.z = config.targetZ;
-      }
+    if (isDone.current) return;
+
+    if (Math.abs(camera.position.z - targetZ) > 0.01) {
+      camera.position.z = THREE.MathUtils.lerp(
+        camera.position.z,
+        targetZ,
+        0.05
+      );
+      if (controls) controls.update();
+    } else {
+      isDone.current = true; // On arrête de forcer la position une fois arrivé
     }
   });
-
   return null;
 };
 
-/* 🚀 HeroAnim principal */
-const HeroAnim = ({ wolfX = 1.1, wolfY = -0.2 }) => {
+/*
+  HeroAnim: composant principal qui instancie le Canvas et les éléments 3D.
+  - Le wrapper est focusable (tabIndex) pour permettre les contrôles clavier
+    (Pause, flèches, reset).
+  - `controlsRef` permet d'activer/désactiver `autoRotate` sur OrbitControls.
+  - `wolfApiRef` est transmis au `WolfBillboard` pour piloter le loup depuis le parent.
+*/
+const HeroAnim = ({ wolfY = -0.2 }) => {
   const [width] = useWindowSize();
-  const fov = useMemo(() => {
-    if (width <= 360) return 57;
-    if (width <= 600) return 55;
-    if (width <= 768) return 50;
-    return 45;
-  }, [width]);
+  const controlsRef = useRef();
+  const wolfApiRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const [paused, setPaused] = useState(false);
+  const [liveMsg, setLiveMsg] = useState("");
 
-  const isMobile = width <= 600;
-  const canvasDPR = isMobile ? [1, 1.5] : [1, 2]; // Optimisation DPR pour mobiles et desktop (device pixel ratio (rapport pixel appareil)
+  const handleKeyDown = (e) => {
+    // Espace -> pause / resume
+    if (e.code === "Space") {
+      e.preventDefault();
+      const next = !paused;
+      setPaused(next);
+      if (controlsRef.current) controlsRef.current.autoRotate = !next;
+      if (
+        wolfApiRef.current &&
+        typeof wolfApiRef.current.setPaused === "function"
+      ) {
+        wolfApiRef.current.setPaused(next);
+      }
+    }
+    // Flèches gauche / droite -> imprimer une rotation
+    if (e.code === "ArrowLeft") {
+      if (wolfApiRef.current) wolfApiRef.current.addSpin(-0.06);
+    }
+    if (e.code === "ArrowRight") {
+      if (wolfApiRef.current) wolfApiRef.current.addSpin(0.06);
+    }
+    // R -> reset du loup
+    if (e.code === "KeyR") {
+      if (wolfApiRef.current) wolfApiRef.current.reset();
+    }
+  };
 
+  // Pas d'écouteur global : on focalise le wrapper au clic pour que
+  // les raccourcis clavier fonctionnent après interaction.
+
+  // Wrapper focusable: capte les événements clavier quand il est focus
   return (
-    <div className={styles.wrapper}>
+    <div
+      ref={wrapperRef}
+      className={styles.wrapper}
+      tabIndex={0}
+      aria-label="Animation hero, contrôlable au clavier"
+      aria-describedby="hero-controls-desc"
+      onKeyDown={handleKeyDown}
+      onClick={() => wrapperRef.current && wrapperRef.current.focus()}
+    >
       <Canvas
         className={styles.canvas}
-        camera={{ position: [0, 0, 8], fov, near: 0.1, far: 1000 }}
-        dpr={canvasDPR}
-        shadows
-        gl={{
-          antialias: true,
-          alpha: false,
-          powerPreference: "high-performance",
-        }}
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          inset: 0,
-          background: "#000000",
+        camera={{ position: [0, 1, 10], fov: width <= 600 ? 55 : 45 }}
+        // On attache les événements directement au domElement du canvas
+        onCreated={(state) => {
+          state.gl.domElement.style.touchAction = "none";
+          // Forcer le fond noir
+          try {
+            state.gl.setClearColor(new THREE.Color("#000000"), 1);
+          } catch (err) {
+            // Certains contextes peuvent ne pas exposer setClearColor, ignorer
+          }
         }}
       >
-        <CinematicZoom />
         <Suspense fallback={<Loader />}>
-          <StarsBackground />
-          <Controls />
+          <CinematicZoom />
+
+          <OrbitControls
+            ref={controlsRef}
+            makeDefault
+            enablePan={false}
+            enableZoom={false}
+            enableRotate={true}
+            autoRotate
+            autoRotateSpeed={0.5}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 1.5}
+          />
+
+          <Stars
+            radius={300}
+            depth={100}
+            count={6000}
+            factor={7}
+            fade
+            speed={0.2}
+          />
           <MoonObject />
-          <WolfBillboard positionX={wolfX} positionY={wolfY} />
+          <WolfBillboard
+            positionY={wolfY}
+            apiRef={wolfApiRef}
+            onPauseChange={(isPaused) =>
+              setLiveMsg(isPaused ? "Animation en pause" : "Animation relancée")
+            }
+          />
+          <Environment preset="night" />
+          <fog attach="fog" args={["#0a1628", 8, 40]} />
         </Suspense>
       </Canvas>
+      {/* Description accessible des contrôles (visually hidden) */}
+      <div
+        id="hero-controls-desc"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          margin: -1,
+          border: 0,
+          padding: 0,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          clipPath: "inset(50%)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Interactions : cliquer ou glisser pour tourner; Espace pour
+        pause/reprise; flèches gauche/droite pour donner de la vitesse; R pour
+        remettre à zéro; tapoter pour pause sur mobile.
+      </div>
+      {/* Aria-live announcer (visually hidden) for screen readers — placed outside the Canvas */}
+      <div
+        aria-live="polite"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          margin: -1,
+          border: 0,
+          padding: 0,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          clipPath: "inset(50%)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {liveMsg}
+      </div>
     </div>
   );
 };

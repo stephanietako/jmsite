@@ -1,25 +1,86 @@
-# Démarrer avec Vite
+# <p align="center"><a href="https://portfolio-takodev.vercel.app/"><img src="src/assets/logo/jmlogo.jpg" alt="Tako Dev" width="120" /></a></p>
 
-Ce projet utilise [Vite](https://vitejs.dev/) pour un développement React moderne et rapide.
+# Portfolio — projet pour Jean‑Marc Eliette (développé par Tako Dev)
 
-## Scripts disponibles
+Courte description
 
-Dans le dossier du projet, tu peux lancer :
+- Site portfolio et vitrine — hero 3D interactif réalisé pour Jean‑Marc Eliette. L'œuvre "Mutation Wolf" est de Jean‑Marc Eliette ; ce projet a été développé par Tako Dev.
 
-### `npm run dev`
+Stack (résumé)
 
-Démarre le serveur de développement.\
-Ouvre [http://localhost:5173](http://localhost:5173) pour voir le site dans ton navigateur.
+- Frontend : React + Vite
+- 3D : three.js, @react-three/fiber
+- Styles : Sass (SCSS) + variables CSS
 
-### `npm run build`
+Prérequis
 
-Construit l’application pour la production dans le dossier `dist`.
+- Node.js 16+
+- npm ou yarn
 
-### `npm run preview`
+Installation
 
-Prévisualise localement la version de production après build.
+```bash
+npm install
+```
 
-## En savoir plus
+Commandes utiles
 
-- [Documentation Vite](https://vitejs.dev/guide/)
-- [Documentation React](https://react.dev/)
+- Démarrer en dev :
+
+```bash
+npm run dev
+```
+
+Interactions importantes
+
+- Cliquer / glisser : tourner l'objet
+
+# Portfolio — Jean‑Marc Eliette
+
+## Site portfolio présentant l'œuvre **"Mutation Wolf"** de Jean‑Marc Eliette. Développé par Tako Dev.
+
+## 🚀 Démarrage rapide
+
+Prérequis : Node.js 16+ et npm.
+
+Installation :
+
+```bash
+npm install
+```
+
+Démarrer en dev :
+
+```bash
+npm run dev
+```
+
+Build production :
+
+```bash
+npm run build
+```
+
+---
+
+## 🎯 Interactions principales
+
+- Cliquer / glisser : tourner le loup
+- Tap (mobile) : pause / reprise
+- Espace : pause / reprise
+- Flèches ← / → : donner une impulsion de rotation
+- R : reset de la position
+
+---
+
+## ♿ Accessibilité
+
+- Wrapper du Canvas focusable avec `aria-describedby` et `aria-live` pour annoncer pause/reprise.
+- Respect de `prefers-reduced-motion`.
+
+---
+
+## ✉️ Contact
+
+- Développé par Tako Dev — https://portfolio-takodev.vercel.app/
+- Œuvre originale : "Mutation Wolf" par Jean‑Marc Eliette

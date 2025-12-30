@@ -1,7 +1,7 @@
 // Styles
 import styles from "./styles.module.scss";
 // Assets
-import logo from "../../assets/logo/jmlogo.jpg";
+import logo from "@/assets/logo/jmlogo.jpg";
 
 const Footer = () => {
   const date = new Date();
@@ -10,29 +10,31 @@ const Footer = () => {
   return (
     <div className={styles.footer}>
       <footer className={styles.__container}>
-        <ul>
-          <li>
-            <a href="/">
-              <img
-                className={styles.__logo}
-                src={logo}
-                alt="Jean-Marc graphiste motion design logo"
-              />
-            </a>
-          </li>
-          <li>
-            <div className={styles.__copyright}>
-              &#169; Copyright {currentYear}
-            </div>
-          </li>
-          <li>
-            <span className={styles.__takodev}>
-              <a href={takodevURL} rel="noopener noreferrer">
-                <p> | Tako Dev</p>
+        <div className={styles.left}>
+          <a href="/">
+            <img
+              className={styles.__logo}
+              src={logo}
+              alt="Jean-Marc graphiste motion design logo"
+            />
+          </a>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.__text}>
+            <span>Jean-Marc graphiste motion design logo</span>
+            <span>
+              © Copyright {currentYear} |{" "}
+              <a
+                href={takodevURL}
+                rel="noopener noreferrer"
+                target="_blank"
+                aria-label="Tako Dev — ouvre dans un nouvel onglet"
+              >
+                Tako Dev
               </a>
             </span>
-          </li>
-        </ul>
+          </div>
+        </div>
       </footer>
     </div>
   );

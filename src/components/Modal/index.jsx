@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./styles.module.scss";
 import wolf from "@/assets/images/mutation_wolf_origin.webp";
 
-/* Composant image zoomable avec interactions tactiles et souris */
+/* Image zoomable avec interactions tactiles et souris */
 function ZoomableImage({ src, alt }) {
   const [zoom, setZoom] = useState(1);
   const [drag, setDrag] = useState({ x: 0, y: 0 });

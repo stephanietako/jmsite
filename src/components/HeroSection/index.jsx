@@ -1,4 +1,5 @@
 import { useState, lazy, Suspense } from "react";
+// Styles
 import styles from "./styles.module.scss";
 
 const Modal = lazy(() => import("../../components/Modal"));
@@ -18,16 +19,14 @@ const HeroSection = () => {
         </Suspense>
       </div>
 
-      {/* Overlay texte et bouton au-dessus */}
       <div className={styles.__content_wrapper}>
         <div className={styles.__hero_text_overlay}>
-          <div className={styles.__hero_text_title}>
-            <h1 id="hero-title">jean-marc eliette</h1>
-          </div>
-
-          <div className={styles.__hero_text_body}>
-            <p>directeur artistique + motion design</p>
-            <p>corporate / digital</p>
+          <div className={styles.__hero_text_content}>
+            <h1 id="hero-title">
+              jean-marc eliette
+              <span> — directeur artistique + motion design</span>
+              <span> — corporate / digital</span>
+            </h1>
           </div>
 
           <div className={styles.__hero_text_actions}>

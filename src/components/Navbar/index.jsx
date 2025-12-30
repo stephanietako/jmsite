@@ -1,6 +1,7 @@
-import logo from "../../assets/logo/jmlogo.jpg";
-import linkedin from "../../assets/icon/linkedin-clear.png";
-import email from "../../assets/icon/at-clear.png";
+// Assets
+import logo from "@/assets/logo/jmlogo.jpg";
+import linkedin from "@/assets/icon/linkedin.svg";
+import email from "@/assets/icon/email.svg";
 // Styles
 import styles from "./styles.module.scss";
 
@@ -22,18 +23,28 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar} aria-label="Navigation principale">
-      <a href="/" className={styles.logo}>
-        <img src={logo} alt="Logo Jean-Marc" />
-      </a>
-      <ul className={styles.menu}>
-        {menuItems.map((item) => (
-          <li key={item.id}>
-            <a href={item.link} target="_blank" rel="noopener noreferrer">
-              <img src={item.icon} alt={item.alt} className={styles.icon} />
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className={styles.left}>
+        <a href="/" className={styles.logo} aria-label="Accueil">
+          <img src={logo} alt="Logo Jean-Marc" />
+        </a>
+      </div>
+      <div className={styles.right}>
+        <ul className={styles.menu}>
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.menuItem}
+                aria-label={item.alt}
+              >
+                <img src={item.icon} alt={item.alt} className={styles.icon} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </nav>
   );
 };
