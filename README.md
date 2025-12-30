@@ -1,4 +1,3 @@
-<!-- ...existing code... -->
 <p align="center"><a href="https://portfolio-takodev.vercel.app/"><img src="src/assets/logo/jmlogo.jpg" alt="Tako Dev" width="120" /></a></p>
 
 Bonjour — bienvenue sur le portfolio de Jean‑Marc Eliette (développé par Tako Dev).
