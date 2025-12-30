@@ -4,18 +4,9 @@
 
 Courte description
 
-- Site portfolio et vitrine — hero 3D interactif réalisé pour Jean‑Marc Eliette. L'œuvre "Mutation Wolf" est de Jean‑Marc Eliette ; ce projet a été développé par Tako Dev.
-
 Stack (résumé)
 
-- Frontend : React + Vite
-- 3D : three.js, @react-three/fiber
-- Styles : Sass (SCSS) + variables CSS
-
 Prérequis
-
-- Node.js 16+
-- npm ou yarn
 
 Installation
 
@@ -25,15 +16,11 @@ npm install
 
 Commandes utiles
 
-- Démarrer en dev :
-
 ```bash
 npm run dev
 ```
 
 Interactions importantes
-
-- Cliquer / glisser : tourner l'objet
 
 # Portfolio — Jean‑Marc Eliette
 
@@ -61,26 +48,8 @@ Build production :
 npm run build
 ```
 
----
-
 ## 🎯 Interactions principales
-
-- Cliquer / glisser : tourner le loup
-- Tap (mobile) : pause / reprise
-- Espace : pause / reprise
-- Flèches ← / → : donner une impulsion de rotation
-- R : reset de la position
-
----
 
 ## ♿ Accessibilité
 
-- Wrapper du Canvas focusable avec `aria-describedby` et `aria-live` pour annoncer pause/reprise.
-- Respect de `prefers-reduced-motion`.
-
----
-
 ## ✉️ Contact
-
-- Développé par Tako Dev — https://portfolio-takodev.vercel.app/
-- Œuvre originale : "Mutation Wolf" par Jean‑Marc Eliette
